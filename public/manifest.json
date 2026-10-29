@@ -1,0 +1,62 @@
+{
+  "name": "The Defining Place — The ALTAR",
+  "short_name": "The ALTAR",
+  "description": "Wisdom and quiet counsel for the modern seeker — bridging ancient truth and everyday life, from Nigeria to the world.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FBF9F5",
+  "theme_color": "#0B192C",
+  "categories": ["lifestyle", "books", "education"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "The Bookshelf",
+      "short_name": "Books",
+      "description": "Read devotionals and spiritual sample chapters",
+      "url": "/#books",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Audio Teachings",
+      "short_name": "Audio",
+      "description": "Listen to Rev. Tresh's sermons & ambient sanctuary music",
+      "url": "/#audio",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Share a Need",
+      "short_name": "Prayer",
+      "description": "Submit a confidential prayer or counseling request",
+      "url": "/#prayer",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Sow a Seed",
+      "short_name": "Give",
+      "description": "Support counseling, book funds, and youth outreach",
+      "url": "/#give",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
