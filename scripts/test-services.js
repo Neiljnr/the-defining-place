@@ -205,6 +205,50 @@ async function runEndToEndTests() {
     console.log(`\n   -> Pastor published video "${result.data.video.title}" into Neon.`);
   });
 
+  // 8. User Auth - Google One-Tap / Gmail Sign-In
+  await test('User Auth - Google (Gmail) Sign-In (POST api/auth.js?action=google)', async () => {
+    const testGmail = `seeker.peace.${Date.now()}@gmail.com`;
+    const { req, res } = createMockReqRes('POST', { action: 'google' }, {
+      email: testGmail,
+      name: 'Oluwaseun Adewale',
+      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Oluwaseun'
+    });
+    await (await import('../api/auth.js')).default(req, res);
+    const result = res._getData();
+    if (result.statusCode !== 200 || !result.data.success || !result.data.user) {
+      throw new Error(`Failed to sign in with Google: ${JSON.stringify(result.data)}`);
+    }
+    console.log(`\n   -> Registered/Logged-in via Google: ${result.data.user.name} (${result.data.user.email})`);
+  });
+
+  // 9. User Auth - Minimal Email Registration & Login
+  await test('User Auth - Minimal Email Registration & Login (POST api/auth.js)', async () => {
+    const testEmail = `chidinma.${Date.now()}@example.com`;
+    // Register
+    const { req: regReq, res: regRes } = createMockReqRes('POST', { action: 'register' }, {
+      name: 'Chidinma O.',
+      email: testEmail,
+      password: 'peacefulpass123'
+    });
+    await (await import('../api/auth.js')).default(regReq, regRes);
+    const regResult = regRes._getData();
+    if (regResult.statusCode !== 201 || !regResult.data.success) {
+      throw new Error(`Failed to register user: ${JSON.stringify(regResult.data)}`);
+    }
+
+    // Login
+    const { req: logReq, res: logRes } = createMockReqRes('POST', { action: 'login' }, {
+      email: testEmail,
+      password: 'peacefulpass123'
+    });
+    await (await import('../api/auth.js')).default(logReq, logRes);
+    const logResult = logRes._getData();
+    if (logResult.statusCode !== 200 || !logResult.data.success) {
+      throw new Error(`Failed to login user: ${JSON.stringify(logResult.data)}`);
+    }
+    console.log(`\n   -> Verified minimal email registration & login for ${logResult.data.user.name}`);
+  });
+
   console.log('\n====================================================');
   console.log(`RESULTS: ${passedTests}/${totalTests} End-to-End Service Tests Passed!`);
   console.log('====================================================');

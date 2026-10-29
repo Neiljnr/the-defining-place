@@ -131,3 +131,20 @@ CREATE INDEX IF NOT EXISTS idx_prayer_status ON prayer_requests(status);
 CREATE INDEX IF NOT EXISTS idx_donations_fund ON donations(fund);
 CREATE INDEX IF NOT EXISTS idx_donations_currency ON donations(currency);
 CREATE INDEX IF NOT EXISTS idx_activity_created ON activity_logs(created_at DESC);
+
+-- 9. Sanctuary Seekers / Registered Members (Minimal Data: Name & Email/Gmail)
+CREATE TABLE IF NOT EXISTS sanctuary_users (
+    id VARCHAR(100) PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    avatar_url TEXT,
+    auth_provider VARCHAR(50) DEFAULT 'email', -- 'google' or 'email'
+    password_hash TEXT,
+    saved_books JSONB DEFAULT '[]'::jsonb,
+    bookmarked_audios JSONB DEFAULT '[]'::jsonb,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_email ON sanctuary_users(email);
+

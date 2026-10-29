@@ -85,12 +85,6 @@ export default function Footer({ setActivePage, openGivingModal, openAccountModa
                 <button onClick={() => setActivePage('about')}>Statement of Faith</button>
               </li>
               <li>
-                <button onClick={() => setActivePage('admin')} className="pastor-portal-link">
-                  <ShieldCheck size={13} className="inline-icon mr-1 text-gold" />
-                  <span>Pastor’s Study (Admin)</span>
-                </button>
-              </li>
-              <li>
                 <a href="#privacy" onClick={(e) => { e.preventDefault(); alert("Privacy Notice: All prayer requests and donor details are encrypted at rest and never shared with third parties."); }}>
                   Privacy Policy
                 </a>

@@ -4,6 +4,7 @@ import {
   Video, ShieldCheck, Sparkles, User, Globe, ChevronDown 
 } from 'lucide-react';
 import { ministryData } from '../data/ministryData';
+import { useSanctuaryUser } from '../data/userAuthStore';
 
 export default function Navbar({ 
   activePage, 
@@ -17,6 +18,7 @@ export default function Navbar({
   openSearchModal,
   openAccountModal
 }) {
+  const { user, isLoggedIn } = useSanctuaryUser();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
 
@@ -85,22 +87,16 @@ export default function Navbar({
 
             {/* Account Link */}
             <button 
-              className="utility-btn" 
+              className={`utility-btn ${isLoggedIn ? 'logged-in-user-btn' : ''}`}
               onClick={openAccountModal}
-              title="My Sanctuary Account"
+              title={isLoggedIn ? `Signed in as ${user?.name}` : "My Sanctuary Account"}
             >
-              <User size={13} />
-              <span>My Account</span>
-            </button>
-
-            {/* Pastor Admin Study Link */}
-            <button 
-              className={`utility-btn pastor-study-btn ${activePage === 'admin' ? 'active-admin' : ''}`}
-              onClick={() => setActivePage('admin')}
-              title="Pastor's Study (Sanctuary Dashboard)"
-            >
-              <ShieldCheck size={13} className="text-gold" />
-              <span>Pastor's Study</span>
+              {user?.avatarUrl ? (
+                <img src={user.avatarUrl} alt="" className="user-nav-mini-avatar" />
+              ) : (
+                <User size={13} className={isLoggedIn ? "text-gold" : ""} />
+              )}
+              <span>{isLoggedIn ? (user?.name?.split(' ')[0] || 'My Sanctuary') : 'My Account'}</span>
             </button>
 
             <button 

@@ -70,16 +70,38 @@ export default function App() {
     localStorage.setItem('altar_currency', currency);
   }, [currency]);
 
-  // Sync URL hash with activePage
+  // Sync URL hash with activePage and listen for confidential shepherd routes
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      if (hash && ['home', 'books', 'audio', 'videos', 'give', 'prayer', 'about', 'contact', 'admin'].includes(hash)) {
+      if (['shepherd', 'shepherd-portal', 'pastor-altar', 'pastor', 'admin'].includes(hash)) {
+        setActivePage('admin');
+        return;
+      }
+      if (hash && ['home', 'books', 'audio', 'videos', 'give', 'prayer', 'about', 'contact'].includes(hash)) {
         setActivePage(hash);
       }
     };
+
+    // Secret pastoral shortcut: Alt + P opens Shepherd Portal
+    const handleKeyDown = (e) => {
+      if ((e.altKey && e.key.toLowerCase() === 'p') || (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a')) {
+        e.preventDefault();
+        setActivePage('admin');
+        window.location.hash = 'shepherd';
+      }
+    };
+
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Initial check on load
+    handleHashChange();
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const handleNavigate = (page) => {
