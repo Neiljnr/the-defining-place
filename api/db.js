@@ -1,42 +1,51 @@
 // ===================================================================
-// Vercel Serverless Database Connection Helper
-// Supports PostgreSQL (Neon, Vercel Postgres, Supabase)
+// Neon Serverless Database Connection Helper
+// Uses @neondatabase/serverless for optimal performance in Serverless/Vercel
 // ===================================================================
 
-let pool = null;
+import { neon } from '@neondatabase/serverless';
+import dotenv from 'dotenv';
 
-export async function getDbPool() {
-  if (pool) return pool;
+// Load .env.local or .env if in local/node environment
+if (!process.env.DATABASE_URL) {
+  try {
+    dotenv.config({ path: '.env.local' });
+    if (!process.env.DATABASE_URL) {
+      dotenv.config({ path: '.env' });
+    }
+  } catch {}
+}
 
-  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+let sqlClient = null;
+
+export function getNeonSql() {
+  const connectionString = process.env.DATABASE_URL || process.env.DATABASE_URL_UNPOOLED || process.env.POSTGRES_URL;
   if (!connectionString) {
     return null;
   }
-
-  try {
-    const { default: pg } = await import('pg');
-    const { Pool } = pg;
-    pool = new Pool({
-      connectionString,
-      ssl: { rejectUnauthorized: false }
-    });
-    return pool;
-  } catch (err) {
-    console.warn('[DB] PostgreSQL driver not loaded or connection failed:', err.message);
-    return null;
+  if (!sqlClient) {
+    sqlClient = neon(connectionString);
   }
+  return sqlClient;
 }
 
 export async function queryDb(text, params = []) {
-  const dbPool = await getDbPool();
-  if (!dbPool) {
+  const sql = getNeonSql();
+  if (!sql) {
+    console.warn('[Neon DB] No DATABASE_URL found in environment.');
     return { rows: [], error: 'NO_DATABASE_URL' };
   }
-  const client = await dbPool.connect();
+
   try {
-    const res = await client.query(text, params);
-    return res;
-  } finally {
-    client.release();
+    // Official Neon serverless query function: returns array of rows directly
+    const result = await sql.query(text, params || []);
+    const rows = Array.isArray(result) ? result : (result?.rows || []);
+    return {
+      rows,
+      rowCount: rows.length
+    };
+  } catch (error) {
+    console.error('[Neon DB Error]:', error.message);
+    throw error;
   }
 }

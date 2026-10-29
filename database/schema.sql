@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS books (
 CREATE TABLE IF NOT EXISTS audio_teachings (
     id VARCHAR(100) PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
+    series VARCHAR(150),
     speaker VARCHAR(150) DEFAULT 'Rev. Tresh',
     category VARCHAR(100) DEFAULT 'Sermon',
     duration VARCHAR(50),
@@ -71,6 +72,7 @@ CREATE TABLE IF NOT EXISTS audio_teachings (
     is_published BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE audio_teachings ADD COLUMN IF NOT EXISTS series VARCHAR(150);
 
 -- 5. Prayer & Pastoral Care Requests
 CREATE TABLE IF NOT EXISTS prayer_requests (
